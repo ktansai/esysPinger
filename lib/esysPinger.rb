@@ -3,7 +3,7 @@
 
 require 'net/ping' #ping
 require 'net/ssh' #ssh
-require 'pp'
+
 
 class PCnode
 	attr_accessor :node_num, :addr, :node_num_str,:ssh,:status
@@ -21,7 +21,7 @@ class PCnode
 		end
 		@addr = "esys-pc#{@node_num_str}.edu.esys.tsukuba.ac.jp"
 		@pinger = Net::Ping::External.new(@addr,nil,timeout)
-		@ssh[:opt][:timeout]=timeout
+		@ssh[:opt][:timeout]=timeout if ssh
 	end
 
 	def on?
@@ -46,8 +46,12 @@ class PCnode
 
 	def get_status
 		#status = :Linux :windows :off
-		@status ||= :linux if self.linux?
-		@status ||= :windows if self.on?
+		if @ssh
+			@status ||= :linux if self.linux?
+			@status ||= :windows if self.on?
+		else
+			@status ||= :on if self.on?
+		end
 		@status ||= :off
 		return @status
 	end
@@ -81,21 +85,7 @@ class PCroom
 		@status ||= self.get_status()
 		counter = 0
 		@status.each{|node| counter+=1 if node==symbol}
-		puts "done"
 		return counter
 	end
 end
-
-ssh={
-	username:"",
-	opt:{
-		port:22
-	}
-}
-
-piyo = PCroom.new(2..91,timeout:5,ssh:ssh)
-pp piyo.get_status
-pp piyo.count(:linux)
-pp piyo.count(:off)
-pp piyo.count(:windows)
 
