@@ -4,7 +4,6 @@
 require 'net/ping' #ping
 require 'net/ssh' #ssh
 
-
 class PCnode
 	attr_accessor :node_num, :addr, :node_num_str,:ssh,:status
 	def initialize(num,timeout:1,ssh:nil)
@@ -29,12 +28,12 @@ class PCnode
 	end
 
 	def linux?
-		if ssh.nil?
+		if @ssh.nil?
 			raise SyntaxError.new('no ssh option')
 		end
 
 		begin
-			return true if Net::SSH.start(@addr,ssh[:username],ssh[:opt])
+			return true if Net::SSH.start(@addr,@ssh[:username],@ssh[:opt])
 		rescue
 			return false
 		end
@@ -42,6 +41,22 @@ class PCnode
 
 	def windows?
 		return !self.linux? && self.on?
+	end
+
+	def user
+		if !self.linux?
+			raise SyntaxError.new('not linux')
+		end
+
+		begin
+			users = ""
+			Net::SSH.start(@addr,ssh[:username],ssh[:opt]) do |s|
+				users = s.exec! 'users'
+			end
+			return users.split(" ").first
+		rescue
+			return nil
+		end
 	end
 
 	def get_status
@@ -56,7 +71,6 @@ class PCnode
 		return @status
 	end
 end
-
 
 class PCroom
 	attr_accessor :nodeList,:responseList,:status
@@ -81,11 +95,13 @@ class PCroom
 		@status = responseList
 		return responseList
 	end
+
 	def count(symbol) #tag = :linux or :windows or :off
 		@status ||= self.get_status()
 		counter = 0
 		@status.each{|node| counter+=1 if node==symbol}
 		return counter
 	end
+
 end
 
