@@ -73,7 +73,7 @@ end
 			}
 		when :off
 			os << "   #{nodes[i]}   "
-			user << blank
+			user[i] = blank
 	end
 end
 threads.each {|job| job.join}
