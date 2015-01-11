@@ -1,19 +1,19 @@
-# esysPinger
+# EsysPinger
 ## 概要
 tkb大学のesysの計算機室のPCに対してに対してPingを送るRubyスクリプトです。  
 
 ## インストール
 ### git clone
-	git clone git@github.com:ktansai/esysPinger.git
+	$ git clone git@github.com:ktansai/esysPinger.git
 
 ### gem
-以下のgemのインストールが必要です。
-- net-ping
-- net-ssh
+	$ sudo gem install bundler
+	$ bundle install --path=vendor/bundle
 
 ## 例
-以下のsampleスクリプトはsampleディレクトリに含まれています。
-### 1.Simple use(on/off)
+以下のスクリプトはexamplesディレクトリに含まれています。  
+### 1 simple.rb
+単純に起動しているか否かを調べることができます。  
 
 ```ruby
 require "../lib/esysPinger.rb"
@@ -25,8 +25,8 @@ puts "on #{room.count(:on)}"
 puts "off #{room.count(:off)}"
 ```
 
-### 2.Judge OS (windows/linux/off)
-起動しているOSまで判断したい場合、sshの公開鍵を設定し、StrictHostKeyCheckingをno とする必要があります。(esys生のみ利用可能です)  
+### 2 judge_os.rb
+起動しているOSまで判断したい場合、sshの公開鍵を設定し、StrictHostKeyCheckingをno とする必要があります。これは機室の席順に表示する例です。(esys生のみ利用可能です)  
 
 ```ruby
 require "../lib/esysPinger.rb"
