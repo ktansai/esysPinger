@@ -2,33 +2,33 @@
 
 module EsysPinger
   class PCroom
-    attr_accessor :nodeList,:responseList,:status
+    attr_reader :node_list, :status_list
 
-    def initialize(range=2..91,timeout:1,ssh:nil)
-      raise SyntaxError.new('invalid range') unless range.is_a? Range
+    def initialize(range = 2..91, timeout:1, ssh:nil)
+      raise 'invalid range' unless range.is_a? Range
 
-      @on_count=0; @nodeList=[]; @responseList=[];
+      @on_count = 0; @node_list = []; @status_list = [];
       range.each do |num|
-        @nodeList << PCnode.new(num,timeout:timeout,ssh:ssh)
+        @node_list << PCnode.new(num, timeout:timeout, ssh:ssh)
       end
     end
 
-    def get_status()
+    def get_status_list
       threads = []
-      @nodeList.each_with_index do |node,i|
-        threads << Thread.new{
-          @responseList[i] = node.get_status
-        }
+      @node_list.each_with_index do |node, i|
+        threads << Thread.new do
+          @status_list[i] = node.get_status
+        end
       end
       threads.each{|job| job.join}
-      @status = responseList
-      return responseList
+      return @status_list
     end
 
-    def count(symbol) #tag = :linux or :windows or :off
-      @status ||= self.get_status()
+    # :linux, :windows, :off, :on で指定
+    def count(symbol)
+      @status_list = self.get_status_list if @status_list.empty?
       counter = 0
-      @status.each{|node| counter+=1 if node==symbol}
+      @status_list.each{ |node| counter += 1 if node == symbol }
       return counter
     end
   end

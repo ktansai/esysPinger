@@ -13,7 +13,7 @@ ssh = {
 }
 
 room = EsysPinger::PCroom.new(2..91, timeout:5, ssh:ssh)
-nodes = room.get_status
+nodes = room.get_status_list
 blank = "         "
 pc_num = []; os = []; user = []; threads = []
 

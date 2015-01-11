@@ -9,7 +9,7 @@ require "pp"
 room = EsysPinger::PCroom.new(2..91, timeout:5)
 
 # 全マシンのステータスを配列で取得
-pp room.get_status
+pp room.get_status_list
 
 # それぞれの状態のマシンをカウント
 puts "on #{room.count(:on)}"
