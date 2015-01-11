@@ -6,7 +6,7 @@ require 'esys_pinger'
 require "pp"
 
 # 検索対象のPCナンバーを指定
-room = EsysPinger::PCroom.new(2..91,timeout:5)
+room = EsysPinger::PCroom.new(2..91, timeout:5)
 
 # 全マシンのステータスを配列で取得
 pp room.get_status
