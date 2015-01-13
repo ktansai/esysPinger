@@ -31,7 +31,8 @@ pc_num = []; os = []; user = []; threads = []
     os << " #{nodes[i]}   "
     threads << Thread.new do
       pc = EsysPinger::PCnode.new(i+2, timeout:5, ssh:ssh)
-      user[i] = pc.user ? "#{pc.user} " : blank
+      pc_user = pc.user
+      user[i] = pc_user ? "#{pc_user} " : blank
     end
   when :off
     os << "   #{nodes[i]}   "

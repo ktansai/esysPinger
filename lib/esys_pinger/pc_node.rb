@@ -36,10 +36,10 @@ module EsysPinger
 
     # ログイン中のユーザを返す
     def user
-      return unless self.linux?
+      return nil unless self.linux?
 
-      users = ""
-      Net::SSH.start(@addr, ssh[:username], ssh[:opt]) do |s|
+      users = nil
+      Net::SSH.start(@addr, @ssh[:username], @ssh[:opt]) do |s|
         users = s.exec! 'users'
       end
       return users.split(" ").first
